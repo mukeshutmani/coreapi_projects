@@ -1,16 +1,73 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Wrapper from './Wrapper'
 import Input from '../utils/Input'
+import { useForm } from "react-hook-form"
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import Loader from './Loader/Loader'
 
 
 
 function Register() {
-  return (
-      <Wrapper >
 
+   const { register, handleSubmit, reset  } = useForm()
+   const [error, setError] = useState(null)
+   const navigate = useNavigate()
+   const [loading, setLoading] = useState(false)
+   
+  //  console.log(error);
+   
+  
+   const dataSubmit = async (data) => {
+
+      if(!data) return <p>Invalid Data </p>
+      
+      setLoading(true)
+      console.log("data", data);
+      
+      setError(null)
+
+      const formData = new FormData();
+
+      formData.append('fullName', data.fullName);
+      formData.append('username', data.username);
+      formData.append('email', data.email);
+      formData.append('password', data.password);
+      formData.append('avatar', data.avatar[0]);
+      formData.append('coverImage', data.coverImage[0]);
+
+
+    try {
+
+      const response = await axios.post('/api/user/register', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+       });
+       console.log("Response", response);
+      //  res()
+       navigate('/home')
+       reset()
+       return response
+           
+    } catch (error) {
+      console.log(error);
+      
+        setError("Data Submit Error",error.message)        
+       }
+    finally {
+      setLoading(false)
+    }
+
+   }
+   
+    return !loading ? (
+      <Wrapper >
         <div className='bg-white/40 w-1/3  text-center p-8 rounded-lg'>
            <p className='text-2xl sm:text-1xl md:text-2xl lg:text-3xl xl:text-3xl font-bold text-gray-800'> Register User</p>
-        <form >
+        <form 
+          onSubmit={handleSubmit(dataSubmit)}
+        >
            <div className='p-4 mt-2 space-y-4 '>
 
                <Input
@@ -21,6 +78,10 @@ function Register() {
                required
                minlength="5"
                maxlength="40"
+               {...register('fullName', {
+                required: true
+               })}
+              //  { ...errors.fullName && <span className='text-red-800'> {errors.name.message } </span> }
                
                />
 
@@ -33,6 +94,11 @@ function Register() {
                required
                minlength="5"
                maxlength="15"
+
+               {...register('username', {
+                required: true
+               })}
+              //  {...errors.username && <span className='text-red-800'> {errors.username.message} </span> }
                />
 
 
@@ -42,6 +108,11 @@ function Register() {
                placeholder="Enter your email"
                className='rounded-sm w-full p-1 m-1 outline-none'
                required
+
+               {...register('email', {
+                required: true
+               })}
+
                />
 
                <Input
@@ -50,24 +121,31 @@ function Register() {
                placeholder="Enter your passsword"
                className='rounded-sm w-full p-1 m-1 outline-none'
                required
-               minlength="6"
-               maxlength="15"
+
+               {...register('password', {
+                required: true
+               })}
                
                />
 
 
             <div className='flex flex-row '>
               <label 
-              htmlFor="profile"
+              htmlFor="avatar"
               className='cursor-pointer rounded-full bg-gray-500 text-white px-4 py-2 ml-1'
               >
                 Profile Picture 📸
               </label>
               <input 
-              id='profile'
+              id='avatar'
               type="file"
               accept="image/*"
               className='hidden'
+              {...register('avatar', {
+                required: true
+              })}
+              // onChange={}
+
               />
 
 
@@ -82,6 +160,10 @@ function Register() {
               type="file"
               accept="image/*"
               className='hidden'
+              {...register('coverImage', {
+                // required: true
+              })}
+            //  onChange={}
               />
             </div>
 
@@ -90,13 +172,15 @@ function Register() {
 
                <button
                type="submit"
+               disabled={loading}
                className='bg-blue-500 w-1/2   text-white p-1 m-1   hover:bg-blue-600 rounded-md '
                > 
-               Submit 
+                {loading ? 'Submitting...' : 'Submit'}
                </button>
 
-               <button
+             <button
                type="button"
+               onClick={()=> navigate('/login')}
                className='bg-blue-500 w-1/2  text-white p-1 m-1   hover:bg-blue-600 rounded-md '
                > 
                Sign In
@@ -108,7 +192,11 @@ function Register() {
         </form>
         </div>
     </Wrapper>
-  )
+  ) : <Wrapper>
+     <div>
+       <Loader />
+     </div>
+  </Wrapper>
 }
 
 export default Register

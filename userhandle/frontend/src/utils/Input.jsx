@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 
 function Input({
     label,
@@ -6,9 +6,9 @@ function Input({
     placeholder,
     className,
     ...props
+   
 
-
-}) {
+},ref) {
   return (
     <div className="w-full ">
         <label htmlFor={label} className='flex ml-1 '>
@@ -19,11 +19,12 @@ function Input({
         type={type}
         placeholder={placeholder}
         className={className}
-        {...props}
+        { ...props}
+        ref={ref}
          />
         
     </div>
   )
 }
 
-export default Input
+export default forwardRef(Input)
