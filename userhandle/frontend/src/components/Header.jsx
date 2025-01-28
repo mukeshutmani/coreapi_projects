@@ -2,10 +2,14 @@ import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 
-function Header() {
+function Header({onlogOut}) {
 
   const navigate = useNavigate()
-     
+  
+  // const handleLogin = () => {
+  //   onlogOut()
+  // }
+
   return (
    <header>
      <div className=' text-xl  w-full h-12 bg-gray-700 text-white'>
@@ -17,7 +21,7 @@ function Header() {
               </h1>
             
             </Link>
-            <Link to='/home'>
+            <Link to='/'>
               <p>Logo</p>
             </Link>
 
@@ -37,7 +41,7 @@ function Header() {
 
               <li className=' p-1 border-2 rounded-lg'>
                 <button 
-                onClick={() => navigate("/logout")}
+                onClick={() =>  onlogOut() }
                 >
                   Logout
                 </button>

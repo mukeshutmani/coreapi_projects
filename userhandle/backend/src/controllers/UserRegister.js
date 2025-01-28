@@ -54,7 +54,7 @@ const userRegister =  asyncHanlder( async (req, res, next) => {
 
     const coverImageLocalPath = req.files?.coverImage?.[0]?.path
     
-    console.log("Avatar local path ",avatarLocalPath);
+    // console.log("Avatar local path ",avatarLocalPath);
     
     if(!avatarLocalPath) {
         throw new ApiError(400, "Local Avatar is required field")
@@ -63,7 +63,7 @@ const userRegister =  asyncHanlder( async (req, res, next) => {
     const avatarOnCloudinary =  await uploadOnCloudinary(avatarLocalPath)
     const coverImageOnCloudinary = await uploadOnCloudinary(coverImageLocalPath)
     
-    console.log("UserREgister file: avtar ", avatarOnCloudinary);
+    // console.log("UserREgister file: avtar ", avatarOnCloudinary);
     
 
     if(!avatarOnCloudinary) {
@@ -101,7 +101,7 @@ const userRegister =  asyncHanlder( async (req, res, next) => {
 const loginUser = asyncHanlder ( async (req, res, next) => {
 
      const { email, password } = req.body;
-     console.log(email);
+    //  console.log(email);
      
      if(!email) {
         throw new ApiError(400, "email is required")
@@ -150,9 +150,64 @@ const loginUser = asyncHanlder ( async (req, res, next) => {
 })
 
 
+const logoutUser = asyncHanlder( async (req, res) => {
+    User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $set: {
+                refreshToken: undefined
+            }
+        },
+        {
+            new: true
+        }
+    )
+
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
+
+    return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(
+        new ApiResponse(200, {}, "User Logout Successfuuly")
+    )
+})
+
+const changePassword = asyncHanlder( async(req, res) => {
+
+       const {oldPassword, newPassword} = req.body;
+
+       if(!oldPassword || !newPassword) {
+              throw new ApiError(400, "Both Fields Are required")
+       }
+
+      const user = await User.findById(req.user?._id)
+      const passwordVerification = await user.isPasswordCorrect(oldPassword)
+      
+      if(!passwordVerification){
+        throw new ApiError(400, "Opps! Invalid Old Password! Try Again")
+      }
+      
+      user.password = newPassword;
+      await user.save({validateBeforeSave: false})
+      
+      return res
+      .status(200)
+      .json(
+        new ApiResponse(200, {}, "Password Changed SuccessFully")
+      )
+              
+})
+
 
 
 export {
     userRegister,
-    loginUser
+    loginUser,
+    logoutUser,
+    changePassword
 }

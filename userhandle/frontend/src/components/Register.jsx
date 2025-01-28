@@ -23,7 +23,7 @@ function Register() {
       if(!data) return <p>Invalid Data </p>
       
       setLoading(true)
-      console.log("data", data);
+      // console.log("data", data);
       
       setError(null)
 
@@ -44,14 +44,14 @@ function Register() {
           'Content-Type': 'multipart/form-data'
         }
        });
-       console.log("Response", response);
+      //  console.log("Response", response);
       //  res()
        navigate('/home')
        reset()
        return response
            
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       
         setError("Data Submit Error",error.message)        
        }
@@ -76,12 +76,11 @@ function Register() {
                placeholder="Enter your fullname"
                className='rounded-sm w-full p-1 m-1 outline-none'
                required
-               minlength="5"
-               maxlength="40"
+               
+               name="fullName"
                {...register('fullName', {
                 required: true
                })}
-              //  { ...errors.fullName && <span className='text-red-800'> {errors.name.message } </span> }
                
                />
 
@@ -94,7 +93,7 @@ function Register() {
                required
                minlength="5"
                maxlength="15"
-
+               name="username"
                {...register('username', {
                 required: true
                })}
@@ -108,7 +107,7 @@ function Register() {
                placeholder="Enter your email"
                className='rounded-sm w-full p-1 m-1 outline-none'
                required
-
+               name="email"
                {...register('email', {
                 required: true
                })}
@@ -121,7 +120,7 @@ function Register() {
                placeholder="Enter your passsword"
                className='rounded-sm w-full p-1 m-1 outline-none'
                required
-
+               name="password"
                {...register('password', {
                 required: true
                })}
@@ -141,6 +140,8 @@ function Register() {
               type="file"
               accept="image/*"
               className='hidden'
+
+              name='avatar'
               {...register('avatar', {
                 required: true
               })}
@@ -160,6 +161,7 @@ function Register() {
               type="file"
               accept="image/*"
               className='hidden'
+              name='coverImage'
               {...register('coverImage', {
                 // required: true
               })}

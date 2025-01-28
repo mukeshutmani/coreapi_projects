@@ -3,41 +3,57 @@ import Wrapper from './Wrapper'
 import Input from '../utils/Input'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
+import Loader from './Loader/Loader';
 
 function Login() {
    const navigate = useNavigate()
+   const [error, setError] = useState(null)
+   const [loader, setLoader] = useState(false)
+
+
    const [inputValue, setInputValue] = useState({
       email:"",
       password:"",
    })
    
    const handleLogin = async (e) => {
+
       e.preventDefault();
+
+      setLoader(true)
+      setError(null)
+
       try {
           if(!inputValue.email || !inputValue.password) return null
-          console.log(inputValue);
+         //  console.log(inputValue);
           
           const response = await axios.post('/api/user/login', inputValue);
-          if(!response) return console.log('Serevr Error while fetching data ');
+         //  if(!response) return console.log('Serevr Error while fetching data ');
           
-          console.log(response);
-         
+         //  console.log(response);
+          setInputValue({email: '', password: ''})
+          navigate('/home')
+          return response
       } catch (error) {
-         console.log(error);
+         setError(error.response.data.message)
+         // console.error("Login Error",error.response.data.message);
+      } finally {
          
-         console.error("Login Error",error.response.data.message);
+         setLoader(false)
       }
    }
 
 
-  return (
+  return !loader ? (
     <Wrapper>
         <div className='bg-white/40 w-1/3 text-center p-6 rounded-lg'>
            <h1 className='font-bold text-2xl p-4'>Login Page</h1>
          <form onSubmit={handleLogin} >
             <div className='p-2 mt-2 space-y-4'  >
-
-            <Input
+                {error ? 
+                <p className='text-red-700 '> {error} </p> 
+                : <p className='invisible'>Error</p>}
+            <Input 
                label="Email"
                type="email"
                placeholder="Enter your email"
@@ -95,7 +111,7 @@ function Login() {
             </form>
         </div>
     </Wrapper>
-  )
+  ) : <Wrapper> <div> <Loader /> </div> </Wrapper>
 }
 
 export default Login
