@@ -4,11 +4,15 @@ import Input from '../utils/Input'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 import Loader from './Loader/Loader';
+import { registerUser, setAuth } from '../store/user.slice';
+import { useDispatch } from 'react-redux';
+
 
 function Login() {
    const navigate = useNavigate()
    const [error, setError] = useState(null)
    const [loader, setLoader] = useState(false)
+   const dispatch = useDispatch()
 
 
    const [inputValue, setInputValue] = useState({
@@ -16,6 +20,9 @@ function Login() {
       password:"",
    })
    
+
+
+
    const handleLogin = async (e) => {
 
       e.preventDefault();
@@ -24,24 +31,29 @@ function Login() {
       setError(null)
 
       try {
+
           if(!inputValue.email || !inputValue.password) return null
-         //  console.log(inputValue);
-          
+       
           const response = await axios.post('/api/user/login', inputValue);
-         //  if(!response) return console.log('Serevr Error while fetching data ');
+          if(response) {
+             dispatch(registerUser(response.data))
+          }
           
-         //  console.log(response);
+          dispatch(setAuth(true))
+
           setInputValue({email: '', password: ''})
-          navigate('/home')
+          navigate('/my-profile')
           return response
+
       } catch (error) {
-         setError(error.response.data.message)
-         // console.error("Login Error",error.response.data.message);
+         setError(error.response.data.message) 
+
       } finally {
-         
          setLoader(false)
       }
    }
+
+
 
 
   return !loader ? (

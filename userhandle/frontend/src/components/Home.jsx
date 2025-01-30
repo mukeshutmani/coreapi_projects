@@ -8,11 +8,8 @@ function Home() {
     
     <div className=' bg-gray-500 '>
       <div className='grid md:grid-cols-4 '>
-         <Profile />
-         <Profile />
-         <Profile />
-         <Profile />
-         <Profile />
+       
+         {/* <Profile /> */}
          
       </div>
 

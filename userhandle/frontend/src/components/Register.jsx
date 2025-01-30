@@ -5,6 +5,10 @@ import { useForm } from "react-hook-form"
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import Loader from './Loader/Loader'
+import { registerUser } from '../store/user.slice'
+import { useDispatch } from 'react-redux'
+
+
 
 
 
@@ -14,6 +18,9 @@ function Register() {
    const [error, setError] = useState(null)
    const navigate = useNavigate()
    const [loading, setLoading] = useState(false)
+   
+   const dispatch = useDispatch()
+    
    
   //  console.log(error);
    
@@ -44,9 +51,13 @@ function Register() {
           'Content-Type': 'multipart/form-data'
         }
        });
-      //  console.log("Response", response);
-      //  res()
-       navigate('/home')
+       
+       if(response) {
+          dispatch(registerUser(response.data))
+       }
+      
+      navigate('/my-profile')
+       
        reset()
        return response
            

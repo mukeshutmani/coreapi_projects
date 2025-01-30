@@ -1,11 +1,15 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 
 
 function Header({onlogOut}) {
 
   const navigate = useNavigate()
+  const auth = useSelector((state) => state.user.userauth)
   
+  
+
   // const handleLogin = () => {
   //   onlogOut()
   // }
@@ -22,10 +26,10 @@ function Header({onlogOut}) {
             
             </Link>
             <Link to='/'>
-              <p>Logo</p>
+              {auth && <p>Logo</p>}
             </Link>
 
-            <button 
+          { auth && <button 
             onClick={() => navigate("/my-profile")}
             className='text-1xl mb-2'>
               
@@ -33,39 +37,39 @@ function Header({onlogOut}) {
                   my profile
                 </p>
              
-            </button>
+            </button> }
           </div>
 
           <nav >
             <ul className='flex gap-4 pr-10 cursor-pointer ' >
 
-              <li className=' p-1 border-2 rounded-lg'>
+           { auth && <li className=' p-1 border-2 rounded-lg'>
                 <button 
-                onClick={() =>  onlogOut() }
+                onClick={() => onlogOut() }
                 >
                   Logout
                 </button>
-              </li>
+              </li>}
 
-              <li
+             { auth && <li
               className=' p-1 border-2 rounded-lg'
               onClick={() => navigate("/home")}
-              > Home </li>
+              > Home </li> }
 
-              <li
+             { !auth && <li
               onClick={() => navigate("/login")}
               className=' p-1 border-2 rounded-lg'
-              >Login</li>
+              >Login</li> }
 
-              <li
+            { !auth && <li
               onClick={() => navigate("/register")}
               className=' p-1 border-2 rounded-lg'
-              >Register</li>
+              >Register</li>}
 
-              <li
+             { auth && <li
               onClick={() => navigate("/change-password")}
               className=' p-1 border-2 rounded-lg'
-              > Change Password </li>
+              > Change Password </li>}
 
             </ul>
           </nav>

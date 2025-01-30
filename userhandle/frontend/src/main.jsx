@@ -1,50 +1,67 @@
-import { StrictMode } from 'react'
+import React from 'react'
 import { createRoot } from 'react-dom/client'
+import {Provider, useSelector} from 'react-redux'
+
 import './index.css'
 import App from './App.jsx'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, useNavigate } from 'react-router-dom'
 import Login from './components/Login.jsx'
 import Register from './components/register.jsx'
 import Changepass from './components/Changepass.jsx'
 import Home from './components/Home.jsx'
 import Profile from './components/Profile.jsx'
+import store from './store/store.js'
+// import PrivateRouter from './PrivateRouter.jsx'
+// const auth = useSelector((state) => state.user.userauth)
+const PrivateRoute = () => {
+  
+  const auth = useSelector((state) => state.user.userauth)
 
-
-const router = createBrowserRouter([
-    {
+  const router = createBrowserRouter([
+    { 
+     
       path:'/',
       element: <App />,
       children: [
-        {
+       {  
           path:"/login",
-          element:<Login />
-        },
-
+          element:  !auth && <Login />
+       },
+  
         {
           path:"/register",
-          element: <Register />
+          element: !auth && <Register />
         },
         {
           path:"/change-password",
-          element: <Changepass />
+          element: auth && <Changepass />
+         
         },
-
+  
         {
           path:"/home",
-          element: <Home />
+          element: auth && <Home />
         },
         {
           path:"/my-profile",
-          element: <Profile />
+          element: auth && <Profile />
+          
         }
-
+  
       ]
     }
-])
+  ])
+
+  return <RouterProvider router={router} />
+}
+
+
 
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-      <RouterProvider router={router} />
-  </StrictMode>,
+ 
+    <Provider store={store}>
+       <PrivateRoute />
+    </Provider>
+ 
 )

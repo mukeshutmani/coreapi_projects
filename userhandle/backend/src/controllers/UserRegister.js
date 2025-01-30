@@ -70,6 +70,8 @@ const userRegister =  asyncHanlder( async (req, res, next) => {
         throw new ApiError(400, " Cloudinary Avatar is required field")
     }
 
+    
+
    const user = await User.create({
         fullName,
         email,
@@ -79,21 +81,26 @@ const userRegister =  asyncHanlder( async (req, res, next) => {
         coverImage: coverImageOnCloudinary?.url || ""
    })
 
-    
+  const {accessToken, refreshToken} = await generateAccessAndRefreshTokens(user?._id)
+
   const createUser = await User.findById(user._id).select(
     "-password, -refreshToken"
   )
-
+  
   if(!createUser) {
       throw new ApiError(500, "something went wrong while registering the user")
   }
 
+  const options = {
+    httpOnly: true,
+    secure: true
+  }
+
    return res
-   .status(200)
-   .json( new ApiResponse(200, createUser, "User Registered Successfully" )
-    )
-
-
+   .status(201)
+   .cookie("accessToken", accessToken, options)
+   .cookie("refreshToken", refreshToken, options)
+   .json( new ApiResponse( 200, createUser, "User Registered Successfully"  ))
 });
 
 
@@ -138,11 +145,10 @@ const loginUser = asyncHanlder ( async (req, res, next) => {
     .cookie("refreshToken", refreshToken, options)
     .json(
         new ApiResponse(
-            200,
-            {
-                user: userLoggedIn , accessToken, refreshToken
-            },
-
+            200, 
+            userLoggedIn, 
+            accessToken, 
+            refreshToken,
             "user loggedIn SuccessFully"
          )
     )
@@ -203,11 +209,19 @@ const changePassword = asyncHanlder( async(req, res) => {
               
 })
 
+const getCurrentUser = asyncHanlder( async(req, res) => {
+     return res
+     .status(201)
+     .json( new ApiResponse (
+        200, req.user, "Current User fetched SuccessFully" 
+    ))    
+})
 
 
 export {
     userRegister,
     loginUser,
     logoutUser,
-    changePassword
+    changePassword,
+    getCurrentUser
 }
