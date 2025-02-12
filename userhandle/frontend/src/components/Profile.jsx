@@ -2,7 +2,7 @@ import React from 'react'
 import Wrapper from './Wrapper'
 import { useSelector } from 'react-redux'
 import Loader from './Loader/Loader'
-
+import dateUtils from '../utils/Dateutils'
 
 
 
@@ -12,6 +12,7 @@ function Profile() {
   const userdata = useSelector((state) => state?.user?.userData?.data)
   let loading = useSelector(state => state.user.loading)
 
+  const createdDate = dateUtils(userdata?.createdAt)
 
   return loading ?  <Wrapper>
                   <div> 
@@ -40,8 +41,8 @@ function Profile() {
                  <p className='text-gray-500'>
                      {userdata?.username}
                  </p>
-                 <p className='text-gray-500'>
-                     {userdata?.createdAt}
+                 <p className='text-gray-500 text-xs'>
+                     {createdDate}
                  </p>
              </div>
 

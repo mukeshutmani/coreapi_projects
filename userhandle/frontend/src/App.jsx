@@ -35,7 +35,7 @@ function App() {
         
     } catch (error) {
            console.log(error); 
-         } finally {
+    } finally {
            dispatch(setLoading(false))
          }
   },[dispatch])
@@ -86,9 +86,9 @@ return (
       {/* <Login /> */}
       {/* <Changepass /> */}
 
-      <Header onlogOut={handleLogout} />
 
-       <div className="bg-gray-500 min-h-screen">
+       <Header onlogOut={handleLogout} />
+       <div className="bg-gray-500 min-h-screen ">
 
         {load ?  <Wrapper>
           
@@ -99,14 +99,14 @@ return (
         <Outlet /> 
         } 
 
-      { message && <p className="min-h-screen flex justify-center items-center      text-3xl"> 
+      { message && <p className="min-h-screen flex justify-center items-center text-3xl"> 
                 {message}
         </p>
         }  
           
        </div>
+         <Footer />
 
-      <Footer />
     
     </>
   )

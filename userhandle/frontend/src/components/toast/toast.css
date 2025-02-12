@@ -1,0 +1,25 @@
+/* From Uiverse.io by PriyanshuGupta28 */ 
+.toast {
+    bottom: 20px;
+    right: 20px;
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .toast-icon svg {
+    width: 30px;
+    height: 20px;
+    fill: #fff;
+  }
+  
+  .toast-content {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+  }
+  

@@ -16,17 +16,17 @@ function Header({onlogOut}) {
 
   return (
    <header>
-     <div className=' text-xl  w-full h-12 bg-gray-700 text-white'>
+     <div className=' text-xl  w-full h-12 bg-gray-700 text-white fixed'>
         <div className=' pl-4 flex justify-between pt-1 '>
           <div className='flex pl-3 gap-4 cursor-pointer '>
-            <Link to="/home">
+            <Link to="/">
               <h1 className=' hover:underline'>
               uniconnect
               </h1>
             
             </Link>
             <Link to='/'>
-              {auth && <p>Logo</p>}
+              {auth && <p>All Posts</p>}
             </Link>
 
           { auth && <button 
@@ -34,7 +34,7 @@ function Header({onlogOut}) {
             className='text-1xl mb-2'>
               
                 <p>
-                  my profile
+                  My Profile
                 </p>
              
             </button> }
@@ -54,7 +54,7 @@ function Header({onlogOut}) {
              { auth && <li
               className=' p-1 border-2 rounded-lg'
               onClick={() => navigate("/home")}
-              > Home </li> }
+              > Create Post </li> }
 
              { !auth && <li
               onClick={() => navigate("/login")}

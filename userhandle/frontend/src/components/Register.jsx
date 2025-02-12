@@ -50,7 +50,8 @@ function Register() {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
-       });
+      });
+      //  console.log(response);
        
        if(response) {
           dispatch(registerUser(response.data))
@@ -62,7 +63,7 @@ function Register() {
        return response
            
     } catch (error) {
-      // console.log(error);
+       console.log(error);
       
         setError("Data Submit Error",error.message)        
        }

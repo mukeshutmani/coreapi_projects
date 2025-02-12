@@ -11,6 +11,7 @@ import Changepass from './components/Changepass.jsx'
 import Home from './components/Home.jsx'
 import Profile from './components/Profile.jsx'
 import store from './store/store.js'
+import Post from './components/post.jsx'
 // import PrivateRouter from './PrivateRouter.jsx'
 // const auth = useSelector((state) => state.user.userauth)
 const PrivateRoute = () => {
@@ -42,11 +43,12 @@ const PrivateRoute = () => {
           path:"/home",
           element: auth && <Home />
         },
+        
         {
           path:"/my-profile",
           element: auth && <Profile />
           
-        }
+        },
   
       ]
     }
