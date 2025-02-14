@@ -30,10 +30,11 @@ import { createSlice } from "@reduxjs/toolkit";
 
         postLoading (state) {
              state.loading = true
-        }
+        },
 
+        
      }
  })
 
- export const  {addPost, postLoading, Posts} = postSlice.actions
+ export const  {addPost, postLoading, Posts, likeChecked} = postSlice.actions
  export default postSlice.reducer

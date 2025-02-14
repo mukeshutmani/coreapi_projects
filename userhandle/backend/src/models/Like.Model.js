@@ -1,3 +1,4 @@
+
 import mongoose, { Schema } from "mongoose";
 
 
@@ -11,7 +12,8 @@ const likeSchema = new Schema({
     LikedPost : {
         type: Schema.Types.ObjectId,
         ref: "Post"
-    }
+    },
+
 
 }, {timestamps: true})
 

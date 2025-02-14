@@ -17,6 +17,8 @@ function Home() {
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(false)
   
+   
+  // console.log(allposts);
   
   
    function formatTimeAgo (time) {
@@ -125,6 +127,10 @@ function Home() {
                      username={post.user.username}
                      fullName={post.user.fullName}
                      createdAt={formatTimeAgo(post.createdAt)}
+                     postlikes={post.likes.length}
+                     likeChecked = {
+                      post.likes.includes(post.user._id)
+                     }
                     />
               </div>
            ))}

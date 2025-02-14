@@ -1,46 +1,50 @@
 import React, { forwardRef, useState } from "react";
 import Like from "../utils/Like/Like";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 
+
+
+
 function PostCard(
-  { username, fullName, avatar, title, createdAt, content = "hello", postId },
+  { username, fullName, avatar, title, createdAt, content = "hello", postId, postlikes,  likeChecked  },
   ref
 ) {
 
-  // const posts = useSelector( state => state.post.Allposts)
-//  console.log(postId);
-
-    const [likes, setLikes] = useState(0)
+    // console.log(likeChecked);
+    
+    
+    
+    const [likes, setLikes] = useState(postlikes)
     const [loading, setLoading] = useState(false)
-
+    const [checked, setChecked] = useState(likeChecked)
     
-    console.log("Likes", likes);
-    
-   const likeHandle = async(postId) => {
+   
+  const likeHandle = async(postId) => {
     setLoading(true)
     setLikes(0)
-
+    
          try {
          const res =  await axios.get('/api/user/count-likes', {
           params: {postId}
          }) 
 
-         console.log(res?.data?.data);
+        //  console.log(res?.data?.data);
          if(res) {
             setLikes(res?.data?.data)
+            setChecked(true)
          }
 
          } catch (error) {
             console.log("Post id Error", error);
+            setChecked(false)
+
          } finally {
             setLoading(false)
          }
    }
   
-  
-  
-  
+     
 
   return (
     <div className="bg-white rounded-lg shadow-md p-5 w-[360px] transition duration-300 m-5 ">
@@ -87,7 +91,7 @@ function PostCard(
            onClick={() =>  likeHandle(postId)}
            disabled={loading}
           >
-            <Like id={postId} likes={likes} />
+            <Like id={postId} likes={likes} checked={checked} />
           </button>
           <button className="hover:text-blue-500">views 100k</button>
         </div>

@@ -70,7 +70,7 @@ const GetAllPost = asyncHanlder( async(req, res) => {
            throw new ApiError(500, "something went wrong while fecthing Posts")
         }
 
-       const totalPosts = await Post.countDocuments({user: userId});
+      //  const totalPosts = await Post.countDocuments({user: userId});
 
         return res
         .status(200)
@@ -104,6 +104,10 @@ const postLikes = asyncHanlder( async(req, res) => {
       if(existedLike) {
 
          const deleteLike =  await Like.deleteOne({ likedBy: _id, LikedPost: postId })
+         
+         await Post.findByIdAndUpdate(postId, {
+            $pull: {likes: _id }
+         })
 
          if(deleteLike) {
             throw new ApiError(400, "Like removed")
@@ -116,14 +120,21 @@ const postLikes = asyncHanlder( async(req, res) => {
             likedBy: _id,
             LikedPost: postId,
          }).save()
+         
+         await Post.findByIdAndUpdate(postId, {
+            $push: {likes: _id}
+         })
 
+         await Post.findByIdAndUpdate(_id, {
+            $push: {checked: true}
+         })
          
          if(!postLikes) {
             throw new ApiError(400, "Likes are not saved")
          }
    
          const countLikes = await Like.countDocuments({ LikedPost: postId });
-   
+         
          if (!countLikes){
             throw new ApiError(400, "Post have not any likes")
          }
@@ -139,8 +150,6 @@ const postLikes = asyncHanlder( async(req, res) => {
          )
       
 })
-
-
 
 
 
