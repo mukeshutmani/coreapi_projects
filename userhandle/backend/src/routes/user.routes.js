@@ -2,7 +2,7 @@ import { Router } from "express";
 import { upload } from "../middlewares/multer.middle.js";
 import { changePassword, getCurrentUser, loginUser, logoutUser, userRegister } from "../controllers/UserRegister.js";
 import { verifyJWT } from "../middlewares/auth.middle.js";
-import { CreatePost, GetAllPost, postLikes } from "../controllers/Post.Controllers.js";
+import { countFollowing, CreatePost, GetAllPost, postLikes, subscription } from "../controllers/Post.Controllers.js";
 
 
 const router = Router()
@@ -40,6 +40,9 @@ router.route('/get-allposts').get(verifyJWT, GetAllPost )
 
 router.route('/count-likes').get(verifyJWT, postLikes)
 
+router.route('/subs').get(verifyJWT, subscription )
+
+router.route('/following').get(verifyJWT, countFollowing )
 
 export {router}
 

@@ -1,5 +1,6 @@
 import { Like } from "../models/Like.Model.js";
 import { Post } from "../models/post.model.js";
+import { Subscription } from "../models/subscriptions.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHanlder } from "../utils/asyncHandler.js";
@@ -46,7 +47,7 @@ const CreatePost = asyncHanlder( async (req, res) => {
 
 const GetAllPost = asyncHanlder( async(req, res) => {
 
-        const userId = req.user?._id
+      //   const userId = req.user?._id
       //   console.log(userId);
        
         const page = parseInt(req.query.page) || 1 ;
@@ -59,11 +60,11 @@ const GetAllPost = asyncHanlder( async(req, res) => {
             sort: {createdAt: -1},
             populate: {
                path: 'user',
-               select: 'fullName username avatar'
+               select: 'fullName username avatar coverImage createdAt updatedAt'
             }
         }
         
-        const posts = await Post.paginate({'user': userId}, options)
+        const posts = await Post.paginate({}, options)
       //   console.log(posts);
         
         if(!posts) {
@@ -153,11 +154,96 @@ const postLikes = asyncHanlder( async(req, res) => {
 
 
 
+const subscription = asyncHanlder(async (req, res) => {
+   
+  const followedToId = req.query.followedToId;
+  const  followedById = req.user._id;
+  
+
+  if(!followedToId || !followedById ) {
+         throw new ApiError(400, "Both Ids Are Required for subscription")
+  }
+  
+  const existedFollowed = await Subscription.findOne({followedTo: followedToId, followedBy: followedById})
+
+
+  if(existedFollowed) {   
+
+     await Subscription.deleteOne({ _id: existedFollowed._id });
+
+      const [followers, following] = await Promise.all([
+        Subscription.countDocuments({ followedBy: followedToId }),
+        Subscription.countDocuments({ followedTo: followedToId })
+      ]);
+
+      return res
+      .status(200)
+      .json(new ApiResponse(204, 
+       { userFollowers: followers, 
+         userFollowing: following }, 
+       "user Unfollowed successfully")
+    );                 
+   }
+
+   const followed =  await Subscription.create({ followedTo: followedToId, followedBy: followedById })
+   
+
+   if(!followed){
+       throw new ApiError(500, "failed to follow user");
+   }
+   
+   const [followers, following] = await Promise.all([
+      Subscription.countDocuments({ followedBy: followedToId }),
+      Subscription.countDocuments({ followedTo: followedToId })
+    ]);
+    
+   return res
+   .status(200)
+   .json(
+      new ApiResponse(201, { userFollowers: followers, userFollowing: following }, 
+      "user followed successfully")
+      
+    )
+   
+});
+
+
+const countFollowing = asyncHanlder( async(req, res) => {
+
+   const userId = req.query.userId;
+   const id = req.user._id
+
+
+   if(!userId) {
+        throw new ApiError(400, "userId is required")
+   }
+
+   const [followers, following] = await Promise.all([
+      Subscription.countDocuments({ followedTo: userId }),
+      Subscription.countDocuments({ followedBy: userId })
+   ])
+
+   const isExist = !!(await Subscription.exists({followedBy: id}));
+   
+   return res
+   .status(200)
+   .json(
+      new ApiResponse(201, { userFollowers: followers, userFollowing: following, status: isExist }, "followers & following fetchedSuccesfully" )
+   )
+
+
+})
+
+
+
+
 
 
 
 export { 
    CreatePost,
    GetAllPost,
-   postLikes
+   postLikes,
+   subscription,
+   countFollowing
  }

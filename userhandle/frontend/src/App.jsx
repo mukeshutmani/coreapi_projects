@@ -7,6 +7,7 @@ import Loader from "./components/Loader/Loader"
 import axios from 'axios'
 import {useDispatch, useSelector} from 'react-redux'
 import { registerUser, setAuth, setLoading , } from "./store/user.slice"
+import { getCountFollowing } from "./store/postSlice"
 
 
 
@@ -21,6 +22,8 @@ function App() {
 
   const load = useSelector(state => state.user.loading)
   // console.log(load);
+
+  
 
   const getUser = useCallback ( async (dispatch) => {
 
@@ -44,7 +47,42 @@ function App() {
   useEffect(() => {
         getUser(dispatch)
   },[dispatch])
+
+ 
+
+
+  // following and follwers data for authUsers
+  const user = useSelector(state => state.user.userData)
   
+  let userId = user?.data?._id;
+ 
+  const countFollowing = useCallback(async () => {
+    console.log("functionCalled");
+    
+      try {
+         const res = await axios.get('/api/user/following', {
+            params: {userId}
+          })
+          console.log(res?.data?.data);
+
+          if(res.data) {
+            dispatch(getCountFollowing(res?.data?.data))
+          }
+
+      } catch (error) {
+          console.log(error); 
+      }
+
+   },[userId])
+   
+  useEffect(() => {
+     if(userId){
+       countFollowing()
+     }
+  },[countFollowing])
+
+  
+
 
 const [message , setMessage] = useState(null)
 

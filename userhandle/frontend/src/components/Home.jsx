@@ -3,23 +3,23 @@ import Post from './post'
 import PostCard from './PostCard'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
-import { Posts } from '../store/postSlice'
+import { getCountFollowing, Posts } from '../store/postSlice'
 import InfiniteScroll from 'react-infinite-scroll-component'
+// import { getAllUsers } from '../store/user.slice'
 // import debounce from "lodash.debounce"
+
 
 function Home() {
   
   const allposts = useSelector(state => state.post.Allposts)
+
+  const user = useSelector(state => state.user.userData)
+  const dispatch = useDispatch()
+
   const currentPage = useSelector(state => state.post.currentPage)
   const hasMore = useSelector(state => state.post.hasMore)
-  // const totalPages = useSelector(state => state.post.totalPages)
-  
-  const dispatch = useDispatch()
+
   const [loading, setLoading] = useState(false)
-  
-   
-  // console.log(allposts);
-  
   
    function formatTimeAgo (time) {
 
@@ -57,17 +57,18 @@ function Home() {
 
   }
   
+
   
   const getAllPosts = useCallback( async (page = 1, limit = 9) => {
      
     if(loading) return;
     setLoading(true)
-
+    
     try {
       const res =  await axios.get('/api/user/get-allposts', {
         params: {page, limit}
       })
-      // console.log(res.data?.data);
+      console.log("Data res",res.data?.data);
       
       if(res?.data?.data) {
           dispatch(Posts({
@@ -85,11 +86,13 @@ function Home() {
        setLoading(false)
     }
 
-  }, [dispatch])
+  }, [loading, dispatch, setLoading])
 
   useEffect(() => {
+    if(allposts.length === 0){
       getAllPosts() 
-  },[dispatch, getAllPosts])
+    }
+  },[getAllPosts])
  
   const hasMorePosts = () => {
      if(!loading && hasMore) {
@@ -118,8 +121,9 @@ function Home() {
           
            {allposts && allposts.map((post) => (
               <div key={post._id}>
-                
+                 
                     <PostCard 
+                    loggedUserId = {post.user._id}
                      postId= {post._id} 
                      title={post.title}
                      content={post.content}
@@ -129,9 +133,11 @@ function Home() {
                      createdAt={formatTimeAgo(post.createdAt)}
                      postlikes={post.likes.length}
                      likeChecked = {
-                      post.likes.includes(post.user._id)
+                      post.likes.includes(user.data._id)
                      }
                     />
+
+                  
               </div>
            ))}
           </div>

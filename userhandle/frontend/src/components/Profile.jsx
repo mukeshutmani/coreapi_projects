@@ -4,15 +4,18 @@ import { useSelector } from 'react-redux'
 import Loader from './Loader/Loader'
 import dateUtils from '../utils/Dateutils'
 
+// import { useParams } from 'react-router-dom'
 
-
-
-function Profile() {
-
+   
+  function Profile() {
+  
   const userdata = useSelector((state) => state?.user?.userData?.data)
   let loading = useSelector(state => state.user.loading)
 
   const createdDate = dateUtils(userdata?.createdAt)
+  
+  const followingData = useSelector(state => state.post.countFollowing);
+
 
   return loading ?  <Wrapper>
                   <div> 
@@ -34,8 +37,8 @@ function Profile() {
                 />
              </div>
 
-             <div className='text-center mt-16'>
-                 <h3 className='text-lg font-semibold'>
+             <div className='text-center mt-16 '>
+                 <h3 className='text-lg font-semibold '>
                     {userdata?.fullName}
                  </h3>
                  <p className='text-gray-500'>
@@ -45,10 +48,15 @@ function Profile() {
                      {createdDate}
                  </p>
              </div>
-
-             <button className='mt-4 px-6 py-2 text-white bg-gray-700 rounded-full hover:bg-slate-600 transition duration-900'>
-                Subscribe
-             </button>
+            
+             <div className='flex gap-2 '>
+             <h1 className='mt-4 px-4 py-1 text-gray-950 rounded-full '>
+                followers {followingData.userFollowers}
+             </h1>
+             <h1 className='mt-4 px-4 py-1 text-gray-950 rounded-full '>
+                following {followingData.userFollowing}
+             </h1>
+            </div>
 
         
         </div> 

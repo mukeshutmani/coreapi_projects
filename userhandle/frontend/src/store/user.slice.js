@@ -4,10 +4,10 @@ import { createSlice } from '@reduxjs/toolkit'
 const userSlice = createSlice({
       name: 'user',
       initialState: {
-        userData: null,
+        userData: [],
         loading: false,
         userauth: false,
-        error: null
+        error: null,
       },
      
 
@@ -27,14 +27,11 @@ const userSlice = createSlice({
             state.userauth = action.payload
         },
 
-        
-
 
       }
 
-      
-      
+         
 })
 
-export const {registerUser, setLoading, setAuth} = userSlice.actions;
+export const {registerUser, setLoading, setAuth, getAllUsers} = userSlice.actions;
 export default userSlice.reducer

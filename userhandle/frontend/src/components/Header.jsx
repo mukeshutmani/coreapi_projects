@@ -8,11 +8,10 @@ function Header({onlogOut}) {
   const navigate = useNavigate()
   const auth = useSelector((state) => state.user.userauth)
   
-  
+  const userdata = useSelector((state) => state?.user?.userData?.data)
 
-  // const handleLogin = () => {
-  //   onlogOut()
-  // }
+   let username = userdata?.username || ''
+  
 
   return (
    <header>
@@ -30,7 +29,7 @@ function Header({onlogOut}) {
             </Link>
 
           { auth && <button 
-            onClick={() => navigate("/my-profile")}
+            onClick={() => navigate(`/${username}`)}
             className='text-1xl mb-2'>
               
                 <p>

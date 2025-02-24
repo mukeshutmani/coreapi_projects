@@ -2,27 +2,34 @@ import React, { forwardRef, useState } from "react";
 import Like from "../utils/Like/Like";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { postUser } from "../store/postSlice";
 
 
 
 
 function PostCard(
-  { username, fullName, avatar, title, createdAt, content = "hello", postId, postlikes,  likeChecked  },
+  { username, fullName, avatar, title, createdAt, content = "hello", postId, postlikes,  likeChecked , loggedUserId },
   ref
 ) {
 
-    // console.log(likeChecked);
-    
-    
+    const navigate = useNavigate()    
     
     const [likes, setLikes] = useState(postlikes)
     const [loading, setLoading] = useState(false)
     const [checked, setChecked] = useState(likeChecked)
     
+    const dispatch = useDispatch()
+
+   const onProfile = () => {
+     dispatch(postUser(postId))
+     navigate(`/profile/${username}`)
+   }
+    
    
   const likeHandle = async(postId) => {
     setLoading(true)
-    setLikes(0)
+    // setLikes()
     
          try {
          const res =  await axios.get('/api/user/count-likes', {
@@ -58,7 +65,7 @@ function PostCard(
           />
         </div>
 
-        <div className="flex-1">
+        <div className="flex-1 cursor-pointer" onClick={onProfile} >
           <h2 ref={ref}>{fullName}</h2>
 
           <h2 ref={ref}>@{username}</h2>

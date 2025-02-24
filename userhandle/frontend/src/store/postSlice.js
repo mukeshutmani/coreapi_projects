@@ -8,6 +8,9 @@ import { createSlice } from "@reduxjs/toolkit";
         currentPage: 1,
         totalPages: 1,
         hasMore: true,
+        postUser: [],
+        followingData: [],
+        countFollowing: {},
      },
 
      reducers: {
@@ -31,10 +34,29 @@ import { createSlice } from "@reduxjs/toolkit";
         postLoading (state) {
              state.loading = true
         },
+       
+        postUser(state, action) {
+          
+         const post = state.Allposts.find((post) => post._id === action.payload)
+         if(post){
+              state.postUser = JSON.parse(JSON.stringify(post.user)); 
 
+            //   console.log(state.postUser);
+              
+         }
+
+        },
+
+        following (state, action) {
+           state.followingData = action.payload
+        },
+
+        getCountFollowing (state, action) {
+             state.countFollowing = action.payload;
+        }
         
      }
  })
 
- export const  {addPost, postLoading, Posts, likeChecked} = postSlice.actions
+ export const  {addPost, postLoading, Posts, likeChecked, postUser, following, getCountFollowing } = postSlice.actions
  export default postSlice.reducer
