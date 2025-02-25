@@ -53,17 +53,17 @@ function App() {
 
   // following and follwers data for authUsers
   const user = useSelector(state => state.user.userData)
-  
+
   let userId = user?.data?._id;
  
   const countFollowing = useCallback(async () => {
-    console.log("functionCalled");
+    // console.log("functionCalled");
     
       try {
          const res = await axios.get('/api/user/following', {
             params: {userId}
           })
-          console.log(res?.data?.data);
+          // console.log(res?.data?.data);
 
           if(res.data) {
             dispatch(getCountFollowing(res?.data?.data))

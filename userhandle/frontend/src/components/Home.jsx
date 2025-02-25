@@ -68,7 +68,7 @@ function Home() {
       const res =  await axios.get('/api/user/get-allposts', {
         params: {page, limit}
       })
-      console.log("Data res",res.data?.data);
+      // console.log("Data res",res.data?.data);
       
       if(res?.data?.data) {
           dispatch(Posts({

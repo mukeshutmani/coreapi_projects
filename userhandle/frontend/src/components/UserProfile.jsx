@@ -26,7 +26,7 @@ function UserProfile() {
    const [dataFollowers, setDataFollowers] = useState(0)
 
    const [status, setStatus] = useState(false)
-   console.log(status);
+   // console.log(status);
    
 
    
@@ -62,7 +62,7 @@ function UserProfile() {
    //  console.log(postUser._id);
     
   const countFollowing = useCallback(async () => {
-    console.log("functionCalled");
+   //  console.log("functionCalled");
     
       try {
          const res = await axios.get('/api/user/following', {
